@@ -20,6 +20,8 @@ Clone the repo somewhere. Add `run-shell` in `.tmux.conf`:
 ```
 run-shell PATH_TO_REPO/tmux-network-bandwidth.tmux
 ```
+NOTE: this line should be placed after `set-option -g status-right ...`.
+
 Press `prefix + :` and type `source-file ~/.tmux.conf`. Done.
 
 ## Usage

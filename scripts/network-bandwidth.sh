@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$CURRENT_DIR/helpers.sh"
 
-getStat() {
-  /usr/sbin/netstat -ibn | /usr/local/bin/awk 'FNR > 1 {
+get_bandwidth() {
+  netstat -ibn | awk 'FNR > 1 {
     interfaces[$1 ":bytesReceived"] = $(NF-4);
     interfaces[$1 ":bytesSent"]     = $(NF-1);
   } END {
@@ -19,30 +19,30 @@ getStat() {
   }'
 }
 
-formatSpeed() {
-  local str=`/usr/local/bin/numfmt -z --to=iec-i --suffix "B/s" --format "%.2f" $1`
+format_speed() {
+  local str=`numfmt -z --to=iec-i --suffix "B/s" --format "%.2f" $1`
   echo -n ${str/".00"/""}
 }
 
 main() {
-  local sleepTime=$(get_tmux_option "status-interval")
-  local oldValue=$(get_tmux_option "@network_bandwidth_old_value")
+  local sleep_time=$(get_tmux_option "status-interval")
+  local old_value=$(get_tmux_option "@network-bandwidth-previous-value")
 
-  if [ -z "$oldValue"]
+  if [ -z "$old_value"]
   then
-    $(set_tmux_option "@network_bandwidth_old_value" "foo")
-    local downloadSpeed=0
-    local uploadSpeed=0
+    $(set_tmux_option "@network-bandwidth-previous-value" "-")
+    echo -n "Please wait..."
+    return 0
   else
-    local firstMeasure=( $(getStat) )
-    sleep $sleepTime
-    local secondMeasure=( $(getStat) )
-    local downloadSpeed=$(((${secondMeasure[0]} - ${firstMeasure[0]}) / $sleepTime))
-    local uploadSpeed=$(((${secondMeasure[1]} - ${firstMeasure[1]}) / $sleepTime))
+    local first_measure=( $(get_bandwidth) )
+    sleep $sleep_time
+    local second_measure=( $(get_bandwidth) )
+    local download_speed=$(((${second_measure[0]} - ${first_measure[0]}) / $sleep_time))
+    local upload_speed=$(((${second_measure[1]} - ${first_measure[1]}) / $sleep_time))
+    $(set_tmux_option "@network-bandwidth-previous-value" "↓$(format_speed $download_speed) • ↑$(format_speed $upload_speed)")
   fi
 
-  local value="↓$(formatSpeed $downloadSpeed) • ↑$(formatSpeed $uploadSpeed)"
-  echo -n $value
+  echo -n $(get_tmux_option "@network-bandwidth-previous-value")
 }
 
 main
