@@ -20,3 +20,23 @@ set_tmux_option() {
   $(tmux set-option -gq $option_name "$option_value")
 }
 
+os_type() {
+  local os_name="unknown"
+
+  case $(uname | tr '[:upper:]' '[:lower:]') in
+    linux*)
+      os_name="linux"
+      ;;
+    darwin*)
+      os_name="osx"
+      ;;
+    msys*)
+      os_name="windows"
+      ;;
+    freebsd*)
+      os_name="freebsd"
+      ;;
+  esac
+
+  echo -n $os_name
+}
