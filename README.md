@@ -35,5 +35,9 @@ set-option -g status-right "#{network_bandwidth}"
 ```
 then you will see the bandwidth in the status line: `↓3.5MiB/s • ↑134KiB/s`
 
+## Other plugins
+* [tmux-spotify](https://github.com/xamut/tmux-spotify)
+* [tmux-weather](https://github.com/xamut/tmux-weather)
+
 ## License
 tmux-network-bandwidth plugin is released under the [MIT License](https://opensource.org/licenses/MIT).
