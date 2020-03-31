@@ -9,7 +9,7 @@ Shows the network bandwidth in the status line.
 ### Requirements
 * awk (GNU awk)
 * netstat
-* numfmt 
+* numfmt
 
 macOS: `brew install gawk coreutils`
 
@@ -38,6 +38,10 @@ Add `#{network_bandwidth}` somewhere in the right status line:
 set-option -g status-right "#{network_bandwidth}"
 ```
 then you will see the bandwidth in the status line: `↓3.5MiB/s • ↑134KiB/s`
+
+## Customization
+The plugin could be customized with:
+* `set-option -g @tmux-network-bandwidth-padding 12` - Set up the fixed padding for the output.
 
 ## Other plugins
 * [tmux-spotify](https://github.com/xamut/tmux-spotify)
