@@ -7,9 +7,13 @@ Shows the network bandwidth in the status line.
 
 ## Installation
 ### Requirements
-* awk
+* awk (GNU awk)
 * netstat
-* numfmt
+* numfmt 
+
+macOS: `brew install gawk coreutils`
+
+Linux: `apt-get install gawk net-tools coreutils`
 
 ### With Tmux Plugin Manager
 Add the plugin in `.tmux.conf`:
