@@ -5,12 +5,12 @@ PATH="/usr/local/bin:$PATH:/usr/sbin"
 get_tmux_option() {
   local option_name="$1"
   local default_value="$2"
-  local option_value=$(tmux show-option -gqv $option_name)
+  local option_value="$(tmux show-option -gqv $option_name)"
 
   if [ -z "$option_value" ]; then
-    echo -n $default_value
+    echo -n "$default_value"
   else
-    echo -n $option_value
+    echo -n "$option_value"
   fi
 }
 

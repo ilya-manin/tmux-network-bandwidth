@@ -52,8 +52,9 @@ get_bandwidth() {
 }
 
 format_speed() {
-  local str=`numfmt --to=iec-i --suffix "B/s" --format "%.2f" $1`
-  echo -n ${str/".00"/""}
+  local padding=$(get_tmux_option "@tmux-network-bandwidth-padding" 5)
+  local str=`numfmt --to=iec-i --suffix "B/s" --format "%.2f" --padding $padding $1`
+  echo -n "${str/.00/}"
 }
 
 main() {
@@ -74,7 +75,7 @@ main() {
     $(set_tmux_option "@network-bandwidth-previous-value" "↓$(format_speed $download_speed) • ↑$(format_speed $upload_speed)")
   fi
 
-  echo -n $(get_tmux_option "@network-bandwidth-previous-value")
+  echo -n "$(get_tmux_option "@network-bandwidth-previous-value")"
 }
 
 main
