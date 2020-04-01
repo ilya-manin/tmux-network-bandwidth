@@ -53,8 +53,7 @@ get_bandwidth() {
 
 format_speed() {
   local padding=$(get_tmux_option "@tmux-network-bandwidth-padding" 5)
-  local str=`numfmt --to=iec-i --suffix "B/s" --format "%.2f" --padding $padding $1`
-  echo -n "${str/.00/}"
+  numfmt --to=iec-i --suffix "B/s" --format "%f" --padding $padding $1
 }
 
 main() {
