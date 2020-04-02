@@ -21,15 +21,11 @@ get_bandwidth_for_osx() {
 }
 
 get_bandwidth_for_linux() {
-  netstat -ie | awk '$0 ~ /(RX|TX) packets/ {
-    if ($1 == "RX") {
-      sum["bytesReceived"] += $5
-    } else {
-      sum["bytesSent"] += $5
-    }
-  } END {
-    print sum["bytesReceived"], sum["bytesSent"]
-  }'
+  netstat -ie | awk '
+    match($0, /RX([[:space:]]packets[[:space:]][[:digit:]]+)?[[:space:]]+bytes[:[:space:]]([[:digit:]]+)/, rx) { rx_sum+=rx[2]; }
+    match($0, /TX([[:space:]]packets[[:space:]][[:digit:]]+)?[[:space:]]+bytes[:[:space:]]([[:digit:]]+)/, tx) { tx_sum+=tx[2]; }
+    END { print rx_sum, tx_sum }
+  '
 }
 
 get_bandwidth() {
