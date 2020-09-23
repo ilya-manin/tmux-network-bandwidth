@@ -21,11 +21,15 @@ get_bandwidth_for_osx() {
 }
 
 get_bandwidth_for_linux() {
-  netstat -ie | awk '
-    match($0, /RX([[:space:]]packets[[:space:]][[:digit:]]+)?[[:space:]]+bytes[:[:space:]]([[:digit:]]+)/, rx) { rx_sum+=rx[2]; }
-    match($0, /TX([[:space:]]packets[[:space:]][[:digit:]]+)?[[:space:]]+bytes[:[:space:]]([[:digit:]]+)/, tx) { tx_sum+=tx[2]; }
-    END { print rx_sum, tx_sum }
-  '
+  if which ip &> /dev/null; then
+    ip -s -json link | jq -rc '[(map(.stats64.rx.bytes) | add), (map(.stats64.tx.bytes) | add)] | .[]'
+  elif which netstat &> /dev/null; then
+    netstat -ie | awk '
+      match($0, /RX([[:space:]]packets[[:space:]][[:digit:]]+)?[[:space:]]+bytes[:[:space:]]([[:digit:]]+)/, rx) { rx_sum+=rx[2]; }
+      match($0, /TX([[:space:]]packets[[:space:]][[:digit:]]+)?[[:space:]]+bytes[:[:space:]]([[:digit:]]+)/, tx) { tx_sum+=tx[2]; }
+      END { print rx_sum, tx_sum }
+    '
+  fi
 }
 
 get_bandwidth() {
