@@ -32,7 +32,7 @@ get_bandwidth() {
   local os="$1"
 
   case $os in
-    osx)
+    osx|freebsd)
       echo -n $(get_bandwidth_for_osx)
       return 0
       ;;
@@ -49,7 +49,7 @@ get_bandwidth() {
 
 format_speed() {
   local padding=$(get_tmux_option "@tmux-network-bandwidth-padding" 5)
-  numfmt --to=iec-i --suffix "B/s" --format "%f" --padding $padding $1
+  numfmt --to=iec --suffix "B/s" --format "%f" --padding $padding $1
 }
 
 main() {
@@ -67,6 +67,9 @@ main() {
     local second_measure=( $(get_bandwidth $os) )
     local download_speed=$(((${second_measure[0]} - ${first_measure[0]}) / $sleep_time))
     local upload_speed=$(((${second_measure[1]} - ${first_measure[1]}) / $sleep_time))
+    if [ "$os" = freebsd ]; then # need coreutils pkg
+      numfmt() { gnumfmt "$@"; }
+    fi
     $(set_tmux_option "@network-bandwidth-previous-value" "↓$(format_speed $download_speed) • ↑$(format_speed $upload_speed)")
   fi
 
